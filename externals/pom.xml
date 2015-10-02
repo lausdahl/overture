@@ -30,6 +30,7 @@
                                 <arg value="submodule"/>
                                 <arg value="update"/>
                                 <arg value="--force"/>
+                                <arg value="--init"/>
                                 <redirector outputproperty="redirector.out"
                                     errorproperty="redirector.err">
                                     <inputfilterchain>
