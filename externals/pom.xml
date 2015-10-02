@@ -29,7 +29,6 @@
                             <exec  executable="git" failonerror="true">
                                 <arg value="submodule"/>
                                 <arg value="update"/>
-                                <arg value="--init"/>
                                 <arg value="--force"/>
                                 <redirector outputproperty="redirector.out"
                                     errorproperty="redirector.err">
