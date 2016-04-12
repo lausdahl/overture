@@ -33,7 +33,7 @@
       <menu
           icon="icons/codegen.png"
           id="org.overture.ide.plugins.javagen"
-          label="Code Generation">
+          label="Java Code Generation">
         <command
             commandId="org.overture.ide.plugins.javagen.vdm2java"
             label="Generate Java"

@@ -81,7 +81,7 @@
       </menu>
     </menuContribution>
   </extension>
-
+<!--
   <extension
       point="org.eclipse.ui.bindings">
     <key
@@ -101,5 +101,6 @@
         name="C Code Generation">
     </page>
   </extension>  
-  
+-->
 </plugin>
+

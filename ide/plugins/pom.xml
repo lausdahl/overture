@@ -27,8 +27,8 @@
     <module>developerutils</module>
     <module>uml2</module>
     <module>rttraceviewer</module>
-	<module>javagen</module>
-	<module>cgen</module>
+    <module>javagen</module>
+    <module>cgen</module>
 	<!--module>prob-runtime moved to its own repo </module-->
 	<!--<module>isatrans</module>-->
     <!-- features last -->

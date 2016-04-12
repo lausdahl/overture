@@ -128,7 +128,7 @@ public class Vdm2CCommand extends AbstractHandler
 //		
 //		final IRSettings irSettings = getIrSettings(project);
 //		
-//		Job codeGenerate = new Job("VDM to Java code generation")
+//		Job codeGenerate = new Job("VDM to C code generation")
 //		{
 //			@Override
 //			protected IStatus run(IProgressMonitor monitor)

@@ -39,6 +39,9 @@
    <feature url="features/org.overture.ide.plugins.features.javagen_0.0.0.qualifier.jar" id="org.overture.ide.plugins.features.javagen" version="0.0.0">
       <category name="Overture"/>
    </feature>
+   <feature url="features/org.overture.ide.plugins.features.cgen_0.0.0.qualifier.jar" id="org.overture.ide.plugins.features.cgen" version="0.0.0">
+      <category name="Overture"/>
+   </feature>
    <!--<feature url="features/org.overture.ide.plugins.features.isatrans_0.0.0.qualifier.jar" id="org.overture.ide.plugins.features.isatrans" version="0.0.0">
       <category name="Overture"/>
    </feature>-->
