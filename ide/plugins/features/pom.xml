@@ -27,6 +27,7 @@
 	<!--module>probruntime moved to its own repo</module-->
     <module>rttraceviewer</module>
 	<module>javagen</module>
+<module>cgen</module>
 	<!--<module>isatrans</module>-->
   </modules>
 

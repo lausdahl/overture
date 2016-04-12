@@ -56,6 +56,10 @@
          id="org.overture.ide.plugins.features.javagen"
          version="0.0.0"/>
 
+<includes
+         id="org.overture.ide.plugins.features.cgen"
+         version="0.0.0"/>
+
 
   <!-- <includes
          id="org.overture.ide.plugins.features.isatrans"
