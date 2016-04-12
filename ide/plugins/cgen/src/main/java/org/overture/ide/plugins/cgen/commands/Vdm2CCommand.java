@@ -21,56 +21,29 @@
  */
 package org.overture.ide.plugins.cgen.commands;
 
-import java.io.File;
-import java.util.List;
-import java.util.Set;
-
-import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.osgi.service.prefs.Preferences;
-import org.overture.ast.analysis.AnalysisException;
 import org.overture.ast.lex.Dialect;
-import org.overture.codegen.analysis.vdm.Renaming;
-import org.overture.codegen.analysis.violations.InvalidNamesResult;
-import org.overture.codegen.analysis.violations.Violation;
 import org.overture.codegen.assistant.AssistantManager;
-import org.overture.codegen.assistant.LocationAssistantIR;
 import org.overture.codegen.ir.IRSettings;
-import org.overture.codegen.ir.IrNodeInfo;
-import org.overture.codegen.ir.VdmNodeInfo;
-import org.overture.codegen.utils.AnalysisExceptionIR;
-import org.overture.codegen.utils.GeneralCodeGenUtils;
-import org.overture.codegen.utils.GeneralUtils;
-import org.overture.codegen.utils.GeneratedData;
-import org.overture.codegen.utils.GeneratedModule;
-//import org.overture.codegen.vdm2c.IJavaConstants;
-//import org.overture.codegen.vdm2c.JavaCodeGen;
-//import org.overture.codegen.vdm2c.JavaCodeGenUtil;
-//import org.overture.codegen.vdm2c.JavaSettings;
-import org.overture.codegen.vdm2jml.JmlGenerator;
 import org.overture.codegen.vdm2jml.JmlSettings;
 import org.overture.config.Settings;
 import org.overture.ide.core.IVdmModel;
 import org.overture.ide.core.resources.IVdmProject;
+import org.overture.ide.plugins.cgen.Activator;
+import org.overture.ide.plugins.cgen.CodeGenConsole;
 //import org.overture.ide.plugins.cgen.Activator;
 //import org.overture.ide.plugins.cgen.CodeGenConsole;
 import org.overture.ide.plugins.cgen.ICodeGenConstants;
-import org.overture.ide.plugins.cgen.util.PluginVdm2CUtil;
-import org.overture.ide.ui.utility.VdmTypeCheckerUi;
 
 public class Vdm2CCommand extends AbstractHandler
 {
@@ -81,52 +54,53 @@ public class Vdm2CCommand extends AbstractHandler
 		this.assistantManager = new AssistantManager();
 	}
 
-	public Object execute(ExecutionEvent event) //throws ExecutionException
+	public Object execute(ExecutionEvent event) throws ExecutionException
 	{
-		return new String();
-//		// Validate project
-//		ISelection selection = HandlerUtil.getCurrentSelection(event);
-//
-//		if (!(selection instanceof IStructuredSelection))
-//		{
-//			return null;
-//		}
-//
-//		IStructuredSelection structuredSelection = (IStructuredSelection) selection;
-//
-//		Object firstElement = structuredSelection.getFirstElement();
-//
-//		if (!(firstElement instanceof IProject))
-//		{
-//			return null;
-//		}
-//
-//		final IProject project = (IProject) firstElement;
-//		final IVdmProject vdmProject = (IVdmProject) project.getAdapter(IVdmProject.class);
-//
-//		try
-//		{
-//			Settings.release = vdmProject.getLanguageVersion();
-//			Settings.dialect = vdmProject.getDialect();
-//		} catch (CoreException e)
-//		{
-//			Activator.log("Problems setting VDM language version and dialect", e);
-//			e.printStackTrace();
-//		}
-//
-//		CodeGenConsole.GetInstance().activate();
-//		CodeGenConsole.GetInstance().clearConsole();
-//		
-//		deleteMarkers(project);
-//
-//		final IVdmModel model = vdmProject.getModel();
-//
-//		if (model == null)
-//		{
-//			CodeGenConsole.GetInstance().println("Could not get model for project: "
-//					+ project.getName());
-//			return null;
-//		}
+		// Validate project
+		ISelection selection = HandlerUtil.getCurrentSelection(event);
+
+		if (!(selection instanceof IStructuredSelection))
+		{
+			return null;
+		}
+
+		IStructuredSelection structuredSelection = (IStructuredSelection) selection;
+
+		Object firstElement = structuredSelection.getFirstElement();
+
+		if (!(firstElement instanceof IProject))
+		{
+			return null;
+		}
+
+		final IProject project = (IProject) firstElement;
+		final IVdmProject vdmProject = (IVdmProject) project.getAdapter(IVdmProject.class);
+
+		try
+		{
+			Settings.release = vdmProject.getLanguageVersion();
+			Settings.dialect = vdmProject.getDialect();
+		} catch (CoreException e)
+		{
+			Activator.log("Problems setting VDM language version and dialect", e);
+			e.printStackTrace();
+		}
+
+		CodeGenConsole.GetInstance().activate();
+		CodeGenConsole.GetInstance().clearConsole();
+		
+		deleteMarkers(project);
+
+		CodeGenConsole.GetInstance().println("C Code Gen.");
+		
+		final IVdmModel model = vdmProject.getModel();
+
+		if (model == null)
+		{
+			CodeGenConsole.GetInstance().println("Could not get model for project: "
+					+ project.getName());
+			return null;
+		}
 //
 //		if (!model.isParseCorrect())
 //		{
@@ -343,7 +317,7 @@ public class Vdm2CCommand extends AbstractHandler
 //
 //		codeGenerate.schedule();
 //
-//		return null;
+		return null;
 	}
 	
 //	public GeneratedData generateJava(final IVdmProject project,
@@ -431,23 +405,23 @@ public class Vdm2CCommand extends AbstractHandler
 //		return javaSettings;
 //	}
 	
-//	private void deleteMarkers(IProject project)
-//	{
-//		if (project == null)
-//		{
-//			return;
-//		}
-//
-//		try
-//		{
-//			project.deleteMarkers(null, true, IResource.DEPTH_INFINITE);
-//		} catch (CoreException ex)
-//		{
-//			Activator.log("Could not delete markers for project: "
-//					+ project.toString(), ex);
-//			ex.printStackTrace();
-//		}
-//	}
+	private void deleteMarkers(IProject project)
+	{
+		if (project == null)
+		{
+			return;
+		}
+
+		try
+		{
+			project.deleteMarkers(null, true, IResource.DEPTH_INFINITE);
+		} catch (CoreException ex)
+		{
+			Activator.log("Could not delete markers for project: "
+					+ project.toString(), ex);
+			ex.printStackTrace();
+		}
+	}
 
 //	private void outputWarnings(List<String> warnings)
 //	{

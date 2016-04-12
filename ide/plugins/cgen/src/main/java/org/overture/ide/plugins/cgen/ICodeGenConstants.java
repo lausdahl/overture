@@ -24,7 +24,7 @@ package org.overture.ide.plugins.cgen;
 public interface ICodeGenConstants
 {
 	public static final String PLUGIN_ID = "org.overture.ide.plugins.codegen";
-	public static final String CONSOLE_NAME = "Java Code Generator Console";
+	public static final String CONSOLE_NAME = "C Code Generator Console";
 
 	public static final String GENERATE_CHAR_SEQUENCES_AS_STRINGS = PLUGIN_ID
 			+ ".char_sequences_as_strings";
