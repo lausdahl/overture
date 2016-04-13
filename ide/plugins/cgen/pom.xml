@@ -56,7 +56,7 @@
 								</artifactItem>
 								<artifactItem>
 									<groupId>org.overturetool.core.codegen</groupId>
-									<artifactId>cgen</artifactId>
+									<artifactId>vdm2c</artifactId>
 									<version>${project.version}</version>
 								</artifactItem>
 								<artifactItem>

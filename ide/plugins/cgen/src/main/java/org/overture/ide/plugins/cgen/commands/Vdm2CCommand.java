@@ -21,12 +21,18 @@
  */
 package org.overture.ide.plugins.cgen.commands;
 
+import java.util.List;
+
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -44,6 +50,8 @@ import org.overture.ide.plugins.cgen.CodeGenConsole;
 //import org.overture.ide.plugins.cgen.Activator;
 //import org.overture.ide.plugins.cgen.CodeGenConsole;
 import org.overture.ide.plugins.cgen.ICodeGenConstants;
+import org.overture.ide.plugins.cgen.util.PluginVdm2CUtil;
+import org.overture.ide.ui.utility.VdmTypeCheckerUi;
 
 public class Vdm2CCommand extends AbstractHandler
 {
@@ -89,7 +97,7 @@ public class Vdm2CCommand extends AbstractHandler
 		CodeGenConsole.GetInstance().activate();
 		CodeGenConsole.GetInstance().clearConsole();
 		
-		deleteMarkers(project);
+//		deleteMarkers(project);
 
 		CodeGenConsole.GetInstance().println("C Code Gen.");
 		
@@ -101,44 +109,44 @@ public class Vdm2CCommand extends AbstractHandler
 					+ project.getName());
 			return null;
 		}
-//
-//		if (!model.isParseCorrect())
-//		{
-//			CodeGenConsole.GetInstance().println("Could not parse model: "
-//					+ project.getName());
-//			return null;
-//		}
-//
-//		if (!model.isTypeChecked())
-//		{
-//			VdmTypeCheckerUi.typeCheck(HandlerUtil.getActiveShell(event), vdmProject);
-//		}
-//
-//		if (!model.isTypeCorrect())
-//		{
-//			CodeGenConsole.GetInstance().println("Could not type check model: "
-//					+ project.getName());
-//			return null;
-//		}
-//		
-//		CodeGenConsole.GetInstance().println("Starting VDM to Java code generation...\n");
-//		
-//		final List<String> classesToSkip = PluginVdm2CUtil.getClassesToSkip();
+
+		if (!model.isParseCorrect())
+		{
+			CodeGenConsole.GetInstance().println("Could not parse model: "
+					+ project.getName());
+			return null;
+		}
+
+		if (!model.isTypeChecked())
+		{
+			VdmTypeCheckerUi.typeCheck(HandlerUtil.getActiveShell(event), vdmProject);
+		}
+
+		if (!model.isTypeCorrect())
+		{
+			CodeGenConsole.GetInstance().println("Could not type check model: "
+					+ project.getName());
+			return null;
+		}
+		
+		CodeGenConsole.GetInstance().println("Starting VDM to C code generation...\n");
+		
+		final List<String> classesToSkip = PluginVdm2CUtil.getClassesToSkip();
 //		final JavaSettings javaSettings = getJavaSettings(project, classesToSkip);
-//		
+		
 //		final IRSettings irSettings = getIrSettings(project);
-//		
-//		Job codeGenerate = new Job("VDM to C code generation")
-//		{
-//			@Override
-//			protected IStatus run(IProgressMonitor monitor)
-//			{
+		
+		Job codeGenerate = new Job("VDM to C code generation")
+		{
+			@Override
+			protected IStatus run(IProgressMonitor monitor)
+			{
 //				if(javaSettings == null)
 //				{
 //					return Status.CANCEL_STATUS;
 //				}
-//				
-//				// Begin code generation
+				
+				// Begin code generation
 //				final JavaCodeGen vdm2c = new JavaCodeGen();
 //				vdm2c.setSettings(irSettings);
 //				vdm2c.setJavaSettings(javaSettings);
@@ -311,9 +319,9 @@ public class Vdm2CCommand extends AbstractHandler
 //					handleUnexpectedException(ex);
 //				}
 //
-//				return Status.OK_STATUS;
-//			}
-//		};
+				return Status.OK_STATUS;
+			}
+		};
 //
 //		codeGenerate.schedule();
 //
