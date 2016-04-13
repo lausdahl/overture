@@ -47,8 +47,7 @@ import org.overture.ide.core.IVdmModel;
 import org.overture.ide.core.resources.IVdmProject;
 import org.overture.ide.plugins.cgen.Activator;
 import org.overture.ide.plugins.cgen.CodeGenConsole;
-//import org.overture.ide.plugins.cgen.Activator;
-//import org.overture.ide.plugins.cgen.CodeGenConsole;
+import org.overture.codegen.vdm2c.CGen;
 import org.overture.ide.plugins.cgen.ICodeGenConstants;
 import org.overture.ide.plugins.cgen.util.PluginVdm2CUtil;
 import org.overture.ide.ui.utility.VdmTypeCheckerUi;
@@ -97,9 +96,7 @@ public class Vdm2CCommand extends AbstractHandler
 		CodeGenConsole.GetInstance().activate();
 		CodeGenConsole.GetInstance().clearConsole();
 		
-//		deleteMarkers(project);
-
-		CodeGenConsole.GetInstance().println("C Code Gen.");
+		deleteMarkers(project);
 		
 		final IVdmModel model = vdmProject.getModel();
 
@@ -147,7 +144,7 @@ public class Vdm2CCommand extends AbstractHandler
 //				}
 				
 				// Begin code generation
-//				final JavaCodeGen vdm2c = new JavaCodeGen();
+				final CGen vdm2c = new CGen(null);
 //				vdm2c.setSettings(irSettings);
 //				vdm2c.setJavaSettings(javaSettings);
 //
@@ -323,7 +320,7 @@ public class Vdm2CCommand extends AbstractHandler
 			}
 		};
 //
-//		codeGenerate.schedule();
+		codeGenerate.schedule();
 //
 		return null;
 	}
