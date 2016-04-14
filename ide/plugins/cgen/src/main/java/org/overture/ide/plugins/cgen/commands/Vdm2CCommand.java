@@ -135,7 +135,7 @@ public class Vdm2CCommand extends AbstractHandler
 		CodeGenConsole.GetInstance().println("Starting VDM to C code generation...\n");
 
 		final List<String> classesToSkip = PluginVdm2CUtil.getClassesToSkip();
-		//		final JavaSettings javaSettings = getJavaSettings(project, classesToSkip);
+//				final JavaSettings javaSettings = getJavaSettings(project, classesToSkip);
 
 		//		final IRSettings irSettings = getIrSettings(project);
 
@@ -150,26 +150,23 @@ public class Vdm2CCommand extends AbstractHandler
 				//				}
 
 				// Begin code generation
-				final CGen vdm2c = new CGen(new File("/home/mot/Desktop/testgen"));
-
-				CodeGenConsole.GetInstance().println("Created CGen object.\n");
-				//				vdm2c.setSettings(irSettings);
-				//				vdm2c.setJavaSettings(javaSettings);
-				//
 				try
 				{
 					File eclipseProjectFolder = PluginVdm2CUtil.getEclipseProjectFolder(vdmProject);
+					File cCodeOutputFolder = PluginVdm2CUtil.getCCodeOutputFolder(vdmProject);
 
 					// Clean folder with generated Java code
 					GeneralUtils.deleteFolderContents(eclipseProjectFolder, true);
 					
-										// Generate user specified classes
+					final CGen vdm2c = new CGen(cCodeOutputFolder);
+					
+					// Generate user specified classes
 					GeneratedData generatedData = vdm2c.generate(PluginVdm2CUtil.getNodes(model.getSourceUnits()));
 //					
 //					outputUserSpecifiedSkippedClasses(classesToSkip);
 //					outputSkippedClasses(generatedData.getSkippedClasses());
 //					
-//					File javaCodeOutputFolder = PluginVdm2CUtil.getJavaCodeOutputFolder(vdmProject, javaSettings);
+//					File cCodeOutputFolder = PluginVdm2CUtil.getCCodeOutputFolder(vdmProject, javaSettings);
 //					
 //					try
 //					{
@@ -275,7 +272,7 @@ public class Vdm2CCommand extends AbstractHandler
 //						GeneralCodeGenUtils.replaceInFile(new File(eclipseProjectFolder, PluginVdm2CUtil.ECLIPSE_CLASSPATH_FILE), "%s", classPathEntries);
 //						
 //						
-//						CodeGenConsole.GetInstance().println("Generated Eclipse project with Java generated code.\n");
+						CodeGenConsole.GetInstance().println("Finished generating VDM model.\n");
 //
 //					} catch (Exception e)
 //					{

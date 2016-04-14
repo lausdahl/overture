@@ -82,7 +82,7 @@ public class PluginVdm2CUtil
 	public static final String ECLIPSE_CLASSPATH_TEMPLATE_FILE = "cg.classpath";
 	public static final String ECLIPSE_PROJECT_TEMPLATE_FILE = "cg.project";
 
-	public static final String ECLIPSE_PROJECT_ROOT_FOLDER = "java";
+	public static final String ECLIPSE_PROJECT_ROOT_FOLDER = "c";
 	public static final String ECLIPSE_CLASSPATH_FILE = ".classpath";
 	public static final String ECLIPSE_PROJECT_FILE = ".project";
 	public static final String ECLIPSE_RES_FILES_FOLDER = "eclipsefiles";
@@ -184,14 +184,14 @@ public class PluginVdm2CUtil
 		return getFolder(getEclipseProjectFolder(project), CODEGEN_RUNTIME_LIB_FOLDER);
 	}
 	
-//	public static File getJavaCodeOutputFolder(IVdmProject project, JavaSettings settings)
-//			throws CoreException
-//	{
-//		File outputDir = getEclipseProjectFolder(project);
-//		outputDir = getFolder(outputDir, ECLIPSE_PROJECT_SRC_FOLDER);
-//		
-//		return outputDir;
-//	}
+	public static File getCCodeOutputFolder(IVdmProject project)
+			throws CoreException
+	{
+		File outputDir = getEclipseProjectFolder(project);
+		outputDir = getFolder(outputDir, ECLIPSE_PROJECT_SRC_FOLDER);
+		
+		return outputDir;
+	}
 
 	public static void addMarkers(String generalMessage,
 			Set<Violation> violations)
