@@ -39,21 +39,19 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.osgi.service.prefs.Preferences;
-import org.overture.ast.analysis.AnalysisException;
 import org.overture.ast.lex.Dialect;
 import org.overture.codegen.assistant.AssistantManager;
 import org.overture.codegen.ir.IRSettings;
 import org.overture.codegen.utils.AnalysisExceptionIR;
 import org.overture.codegen.utils.GeneralUtils;
 import org.overture.codegen.utils.GeneratedData;
+import org.overture.codegen.vdm2c.CGen;
 import org.overture.codegen.vdm2jml.JmlSettings;
 import org.overture.config.Settings;
 import org.overture.ide.core.IVdmModel;
 import org.overture.ide.core.resources.IVdmProject;
 import org.overture.ide.plugins.cgen.Activator;
 import org.overture.ide.plugins.cgen.CodeGenConsole;
-import org.overture.codegen.vdm2c.CGen;
-import org.overture.codegen.vdm2c.sourceformat.ISourceFileFormatter;
 import org.overture.ide.plugins.cgen.ICodeGenConstants;
 import org.overture.ide.plugins.cgen.util.PluginVdm2CUtil;
 import org.overture.ide.ui.utility.VdmTypeCheckerUi;
@@ -376,27 +374,27 @@ public class Vdm2CCommand extends AbstractHandler
 		return preferences;
 	}
 
-	//	public JavaSettings getJavaSettings(final IProject project, List<String> classesToSkip)
-	//	{
-	//		Preferences preferences = getPrefs();
-	//		
-	//		boolean disableCloning = preferences.getBoolean(ICodeGenConstants.DISABLE_CLONING, ICodeGenConstants.DISABLE_CLONING_DEFAULT);
-	//		String javaPackage = preferences.get(ICodeGenConstants.JAVA_PACKAGE, ICodeGenConstants.JAVA_PACKAGE_DEFAULT);
-	//		boolean genVdmLoc = preferences.getBoolean(ICodeGenConstants.GENERATE_VDM_LOCATIONS_INFO, ICodeGenConstants.GENERATE_VDM_LOCATIONS_INFO_DEFAULT);
-	//		
-	//		JavaSettings javaSettings = new JavaSettings();
-	//		javaSettings.setDisableCloning(disableCloning);
-	//		javaSettings.setModulesToSkip(classesToSkip);
-	//		javaSettings.setJavaRootPackage(javaPackage);
-	//		javaSettings.setPrintVdmLocations(genVdmLoc);
-	//		
-	//		if (!JavaCodeGenUtil.isValidJavaPackage(javaSettings.getJavaRootPackage()))
-	//		{
-	//			javaSettings.setJavaRootPackage(project.getName());
-	//		}
-	//		
-	//		return javaSettings;
-	//	}
+//	public JavaSettings getJavaSettings(final IProject project, List<String> classesToSkip)
+//	{
+//		Preferences preferences = getPrefs();
+//		
+//		boolean disableCloning = preferences.getBoolean(ICodeGenConstants.DISABLE_CLONING, ICodeGenConstants.DISABLE_CLONING_DEFAULT);
+//		String javaPackage = preferences.get(ICodeGenConstants.JAVA_PACKAGE, ICodeGenConstants.JAVA_PACKAGE_DEFAULT);
+//		boolean genVdmLoc = preferences.getBoolean(ICodeGenConstants.GENERATE_VDM_LOCATIONS_INFO, ICodeGenConstants.GENERATE_VDM_LOCATIONS_INFO_DEFAULT);
+//		
+//		JavaSettings javaSettings = new JavaSettings();
+//		javaSettings.setDisableCloning(disableCloning);
+//		javaSettings.setModulesToSkip(classesToSkip);
+//		javaSettings.setJavaRootPackage(javaPackage);
+//		javaSettings.setPrintVdmLocations(genVdmLoc);
+//		
+//		if (!JavaCodeGenUtil.isValidJavaPackage(javaSettings.getJavaRootPackage()))
+//		{
+//			javaSettings.setJavaRootPackage(project.getName());
+//		}
+//		
+//		return javaSettings;
+//	}
 
 	private void deleteMarkers(IProject project)
 	{
@@ -416,176 +414,176 @@ public class Vdm2CCommand extends AbstractHandler
 		}
 	}
 
-	//	private void outputWarnings(List<String> warnings)
-	//	{
-	//		if(warnings != null && !warnings.isEmpty())
-	//		{
-	//			for(String warning : warnings)
-	//			{
-	//				CodeGenConsole.GetInstance().println(PluginVdm2CUtil.WARNING + " " + warning);
-	//			}
-	//			
-	//			CodeGenConsole.GetInstance().printErrorln("");
-	//		}
-	//	}
+//	private void outputWarnings(List<String> warnings)
+//	{
+//		if(warnings != null && !warnings.isEmpty())
+//		{
+//			for(String warning : warnings)
+//			{
+//				CodeGenConsole.GetInstance().println(PluginVdm2CUtil.WARNING + " " + warning);
+//			}
+//			
+//			CodeGenConsole.GetInstance().printErrorln("");
+//		}
+//	}
 
-	//	private void outputUserSpecifiedSkippedClasses(
-	//			List<String> userspecifiedSkippedClasses)
-	//	{
-	//		if (!userspecifiedSkippedClasses.isEmpty())
-	//		{
-	//			CodeGenConsole.GetInstance().print("User specified filtered classes: ");
-	//
-	//			for (String skippedClass : userspecifiedSkippedClasses)
-	//			{
-	//				CodeGenConsole.GetInstance().print(skippedClass + " ");
-	//			}
-	//
-	//			CodeGenConsole.GetInstance().println("\n");
-	//		}
-	//		else
-	//		{
-	//			CodeGenConsole.GetInstance().println("No user specified classes to skip.\n");
-	//		}
-	//	}
+//	private void outputUserSpecifiedSkippedClasses(
+//			List<String> userspecifiedSkippedClasses)
+//	{
+//		if (!userspecifiedSkippedClasses.isEmpty())
+//		{
+//			CodeGenConsole.GetInstance().print("User specified filtered classes: ");
+//
+//			for (String skippedClass : userspecifiedSkippedClasses)
+//			{
+//				CodeGenConsole.GetInstance().print(skippedClass + " ");
+//			}
+//
+//			CodeGenConsole.GetInstance().println("\n");
+//		}
+//		else
+//		{
+//			CodeGenConsole.GetInstance().println("No user specified classes to skip.\n");
+//		}
+//	}
 
-	//	private void outputSkippedClasses(List<String> skippedClasses)
-	//	{
-	//		if (!skippedClasses.isEmpty())
-	//		{
-	//			CodeGenConsole.GetInstance().print("Skipping classes (user specified and library named): ");
-	//
-	//			for (String skippedClass : skippedClasses)
-	//			{
-	//				CodeGenConsole.GetInstance().print(skippedClass + " ");
-	//			}
-	//
-	//			CodeGenConsole.GetInstance().println("\n");
-	//		}
-	//	}
-	//	
-	//	private void outputRenamings(List<Renaming> allRenamings)
-	//	{
-	//		if(!allRenamings.isEmpty())
-	//		{
-	//			CodeGenConsole.GetInstance().println("Due to variable shadowing or normalisation of Java identifiers the following renamings of variables have been made:");
-	//			CodeGenConsole.GetInstance().println(GeneralCodeGenUtils.constructVarRenamingString(allRenamings));;
-	//		}
-	//	}
-	//	
-	//	private void outputRuntimeBinaries(File outputFolder)
-	//	{
-	//		File runtime = new File(outputFolder, PluginVdm2CUtil.CODEGEN_RUNTIME_BIN_FILE);
-	//		CodeGenConsole.GetInstance().println("Copied the Java code generator runtime library to " + runtime.getAbsolutePath());
-	//	}
-	//	
-	//	private void outputRuntimeSources(File outputFolder)
-	//	{
-	//		File runtime = new File(outputFolder, PluginVdm2CUtil.CODEGEN_RUNTIME_SOURCES_FILE);
-	//		CodeGenConsole.GetInstance().println("Copied the Java code generator runtime library sources to " + runtime.getAbsolutePath() + "\n");
-	//	}
-	//	
-	//	private void outputVdm2JmlBinaries(File outputFolder)
-	//	{
-	//		File vdm2jmlRuntime = new File(outputFolder, PluginVdm2CUtil.VDM2JML_RUNTIME_BIN_FILE);
-	//		CodeGenConsole.GetInstance().println("Copied the VDM-to-JML runtime library to " + vdm2jmlRuntime.getAbsolutePath());
-	//	}
-	//	
-	//	private void outputVdm2JmlSources(File outputFolder)
-	//	{
-	//		File vdm2jmlSources = new File(outputFolder, PluginVdm2CUtil.VDM2JML_RUNTIME_BIN_FILE);
-	//		CodeGenConsole.GetInstance().println("Copied the VDM-to-JML runtime library sources to " + vdm2jmlSources.getAbsolutePath() + "\n");
-	//	}	
-	//
-	//	private void outputUserspecifiedModules(File outputFolder,
-	//			List<GeneratedModule> userspecifiedClasses)
-	//	{
-	//		for (GeneratedModule generatedModule : userspecifiedClasses)
-	//		{
-	//			if (generatedModule.hasMergeErrors())
-	//			{
-	//				CodeGenConsole.GetInstance().printErrorln(String.format("Could not generate Java for class %s. Following errors were found:", generatedModule.getName()));
-	//
-	//				List<Exception> mergeErrors = generatedModule.getMergeErrors();
-	//
-	//				for (Exception error : mergeErrors)
-	//				{
-	//					CodeGenConsole.GetInstance().printErrorln(error.toString());
-	//				}
-	//			} else if (!generatedModule.canBeGenerated())
-	//			{
-	//				CodeGenConsole.GetInstance().println("Could not code generate class: "
-	//						+ generatedModule.getName() + ".");
-	//				
-	//				if(generatedModule.hasUnsupportedIrNodes())
-	//				{
-	//					LocationAssistantIR locationAssistant = assistantManager.getLocationAssistant();
-	//
-	//					List<VdmNodeInfo> unsupportedInIr = locationAssistant.getVdmNodeInfoLocationSorted(generatedModule.getUnsupportedInIr());
-	//					CodeGenConsole.GetInstance().println("Following VDM constructs are not supported by the code generator:");
-	//
-	//					for (VdmNodeInfo  nodeInfo : unsupportedInIr)
-	//					{
-	//						String message = PluginVdm2CUtil.formatNodeString(nodeInfo, locationAssistant);
-	//						CodeGenConsole.GetInstance().println(message);
-	//
-	//						PluginVdm2CUtil.addMarkers(nodeInfo, locationAssistant);
-	//					}
-	//				}
-	//				
-	//				if(generatedModule.hasUnsupportedTargLangNodes())
-	//				{
-	//					Set<IrNodeInfo> unsupportedInTargLang = generatedModule.getUnsupportedInTargLang();
-	//					CodeGenConsole.GetInstance().println("Following constructs are not supported by the code generator:");
-	//
-	//					for (IrNodeInfo  nodeInfo : unsupportedInTargLang)
-	//					{
-	//						CodeGenConsole.GetInstance().println(nodeInfo.toString());
-	//					}
-	//				}
-	//				
-	//			} else
-	//			{
-	//				File javaFile = new File(outputFolder, generatedModule.getName()
-	//						+ IJavaConstants.JAVA_FILE_EXTENSION);
-	//				CodeGenConsole.GetInstance().println("Generated class: "
-	//						+ generatedModule.getName());
-	//				CodeGenConsole.GetInstance().println("Java source file: "
-	//						+ javaFile.getAbsolutePath());
-	//				
-	//				Set<IrNodeInfo> warnings = generatedModule.getTransformationWarnings();
-	//				
-	//				if(!warnings.isEmpty())
-	//				{
-	//					CodeGenConsole.GetInstance().println("The following warnings were found for class " + generatedModule.getName() + ":");
-	//
-	//					for (IrNodeInfo  nodeInfo : warnings)
-	//					{
-	//						CodeGenConsole.GetInstance().println(nodeInfo.getReason());
-	//					}
-	//				}
-	//
-	//			}
-	//
-	//			CodeGenConsole.GetInstance().println("");
-	//		}
-	//	}
-	//
-	//	private void outputQuotes(IVdmProject vdmProject, File outputFolder,
-	//			JavaCodeGen vdm2c, List<GeneratedModule> quotes) throws CoreException
-	//	{
-	//		if (quotes != null && !quotes.isEmpty())
-	//		{
-	//			for(GeneratedModule q : quotes)
-	//			{
-	//				vdm2c.genJavaSourceFile(outputFolder, q);
-	//			}
-	//
-	//			CodeGenConsole.GetInstance().println("Quotes generated to folder: "
-	//					+ outputFolder.getAbsolutePath());
-	//			CodeGenConsole.GetInstance().println("");
-	//		}
-	//	}
+//	private void outputSkippedClasses(List<String> skippedClasses)
+//	{
+//		if (!skippedClasses.isEmpty())
+//		{
+//			CodeGenConsole.GetInstance().print("Skipping classes (user specified and library named): ");
+//
+//			for (String skippedClass : skippedClasses)
+//			{
+//				CodeGenConsole.GetInstance().print(skippedClass + " ");
+//			}
+//
+//			CodeGenConsole.GetInstance().println("\n");
+//		}
+//	}
+//	
+//	private void outputRenamings(List<Renaming> allRenamings)
+//	{
+//		if(!allRenamings.isEmpty())
+//		{
+//			CodeGenConsole.GetInstance().println("Due to variable shadowing or normalisation of Java identifiers the following renamings of variables have been made:");
+//			CodeGenConsole.GetInstance().println(GeneralCodeGenUtils.constructVarRenamingString(allRenamings));;
+//		}
+//	}
+//	
+//	private void outputRuntimeBinaries(File outputFolder)
+//	{
+//		File runtime = new File(outputFolder, PluginVdm2CUtil.CODEGEN_RUNTIME_BIN_FILE);
+//		CodeGenConsole.GetInstance().println("Copied the Java code generator runtime library to " + runtime.getAbsolutePath());
+//	}
+//	
+//	private void outputRuntimeSources(File outputFolder)
+//	{
+//		File runtime = new File(outputFolder, PluginVdm2CUtil.CODEGEN_RUNTIME_SOURCES_FILE);
+//		CodeGenConsole.GetInstance().println("Copied the Java code generator runtime library sources to " + runtime.getAbsolutePath() + "\n");
+//	}
+//	
+//	private void outputVdm2JmlBinaries(File outputFolder)
+//	{
+//		File vdm2jmlRuntime = new File(outputFolder, PluginVdm2CUtil.VDM2JML_RUNTIME_BIN_FILE);
+//		CodeGenConsole.GetInstance().println("Copied the VDM-to-JML runtime library to " + vdm2jmlRuntime.getAbsolutePath());
+//	}
+//	
+//	private void outputVdm2JmlSources(File outputFolder)
+//	{
+//		File vdm2jmlSources = new File(outputFolder, PluginVdm2CUtil.VDM2JML_RUNTIME_BIN_FILE);
+//		CodeGenConsole.GetInstance().println("Copied the VDM-to-JML runtime library sources to " + vdm2jmlSources.getAbsolutePath() + "\n");
+//	}	
+//
+//	private void outputUserspecifiedModules(File outputFolder,
+//			List<GeneratedModule> userspecifiedClasses)
+//	{
+//		for (GeneratedModule generatedModule : userspecifiedClasses)
+//		{
+//			if (generatedModule.hasMergeErrors())
+//			{
+//				CodeGenConsole.GetInstance().printErrorln(String.format("Could not generate Java for class %s. Following errors were found:", generatedModule.getName()));
+//
+//				List<Exception> mergeErrors = generatedModule.getMergeErrors();
+//
+//				for (Exception error : mergeErrors)
+//				{
+//					CodeGenConsole.GetInstance().printErrorln(error.toString());
+//				}
+//			} else if (!generatedModule.canBeGenerated())
+//			{
+//				CodeGenConsole.GetInstance().println("Could not code generate class: "
+//						+ generatedModule.getName() + ".");
+//				
+//				if(generatedModule.hasUnsupportedIrNodes())
+//				{
+//					LocationAssistantIR locationAssistant = assistantManager.getLocationAssistant();
+//
+//					List<VdmNodeInfo> unsupportedInIr = locationAssistant.getVdmNodeInfoLocationSorted(generatedModule.getUnsupportedInIr());
+//					CodeGenConsole.GetInstance().println("Following VDM constructs are not supported by the code generator:");
+//
+//					for (VdmNodeInfo  nodeInfo : unsupportedInIr)
+//					{
+//						String message = PluginVdm2CUtil.formatNodeString(nodeInfo, locationAssistant);
+//						CodeGenConsole.GetInstance().println(message);
+//
+//						PluginVdm2CUtil.addMarkers(nodeInfo, locationAssistant);
+//					}
+//				}
+//				
+//				if(generatedModule.hasUnsupportedTargLangNodes())
+//				{
+//					Set<IrNodeInfo> unsupportedInTargLang = generatedModule.getUnsupportedInTargLang();
+//					CodeGenConsole.GetInstance().println("Following constructs are not supported by the code generator:");
+//
+//					for (IrNodeInfo  nodeInfo : unsupportedInTargLang)
+//					{
+//						CodeGenConsole.GetInstance().println(nodeInfo.toString());
+//					}
+//				}
+//				
+//			} else
+//			{
+//				File javaFile = new File(outputFolder, generatedModule.getName()
+//						+ IJavaConstants.JAVA_FILE_EXTENSION);
+//				CodeGenConsole.GetInstance().println("Generated class: "
+//						+ generatedModule.getName());
+//				CodeGenConsole.GetInstance().println("Java source file: "
+//						+ javaFile.getAbsolutePath());
+//				
+//				Set<IrNodeInfo> warnings = generatedModule.getTransformationWarnings();
+//				
+//				if(!warnings.isEmpty())
+//				{
+//					CodeGenConsole.GetInstance().println("The following warnings were found for class " + generatedModule.getName() + ":");
+//
+//					for (IrNodeInfo  nodeInfo : warnings)
+//					{
+//						CodeGenConsole.GetInstance().println(nodeInfo.getReason());
+//					}
+//				}
+//
+//			}
+//
+//			CodeGenConsole.GetInstance().println("");
+//		}
+//	}
+//
+//	private void outputQuotes(IVdmProject vdmProject, File outputFolder,
+//			JavaCodeGen vdm2c, List<GeneratedModule> quotes) throws CoreException
+//	{
+//		if (quotes != null && !quotes.isEmpty())
+//		{
+//			for(GeneratedModule q : quotes)
+//			{
+//				vdm2c.genJavaSourceFile(outputFolder, q);
+//			}
+//
+//			CodeGenConsole.GetInstance().println("Quotes generated to folder: "
+//					+ outputFolder.getAbsolutePath());
+//			CodeGenConsole.GetInstance().println("");
+//		}
+//	}
 
 	private void handleUnexpectedException(Exception ex)
 	{
@@ -598,21 +596,21 @@ public class Vdm2CCommand extends AbstractHandler
 		ex.printStackTrace();
 	}
 
-	//	private void handleInvalidNames(InvalidNamesResult invalidNames)
-	//	{
-	//		String message = "The model either uses words that are reserved by Java, declares VDM types"
-	//				+ " that uses Java type names or uses variable names that potentially"
-	//				+ " conflict with code generated temporary variable names";
-	//
-	//		CodeGenConsole.GetInstance().println("Warning: " + message);
-	//
-	//		String violationStr = GeneralCodeGenUtils.constructNameViolationsString(invalidNames);
-	//		CodeGenConsole.GetInstance().println(violationStr);
-	//
-	//		Set<Violation> typeNameViolations = invalidNames.getTypenameViolations();
-	//		PluginVdm2CUtil.addMarkers("Type name violation", typeNameViolations);
-	//
-	//		Set<Violation> reservedWordViolations = invalidNames.getReservedWordViolations();
-	//		PluginVdm2CUtil.addMarkers("Reserved word violations", reservedWordViolations);
-	//	}
+//	private void handleInvalidNames(InvalidNamesResult invalidNames)
+//	{
+//		String message = "The model either uses words that are reserved by Java, declares VDM types"
+//				+ " that uses Java type names or uses variable names that potentially"
+//				+ " conflict with code generated temporary variable names";
+//
+//		CodeGenConsole.GetInstance().println("Warning: " + message);
+//
+//		String violationStr = GeneralCodeGenUtils.constructNameViolationsString(invalidNames);
+//		CodeGenConsole.GetInstance().println(violationStr);
+//
+//		Set<Violation> typeNameViolations = invalidNames.getTypenameViolations();
+//		PluginVdm2CUtil.addMarkers("Type name violation", typeNameViolations);
+//
+//		Set<Violation> reservedWordViolations = invalidNames.getReservedWordViolations();
+//		PluginVdm2CUtil.addMarkers("Reserved word violations", reservedWordViolations);
+//	}
 }
