@@ -145,6 +145,8 @@ public class Vdm2CCommand extends AbstractHandler
 				
 				// Begin code generation
 				final CGen vdm2c = new CGen(null);
+				
+				CodeGenConsole.GetInstance().println("Created CGen object.\n");
 //				vdm2c.setSettings(irSettings);
 //				vdm2c.setJavaSettings(javaSettings);
 //

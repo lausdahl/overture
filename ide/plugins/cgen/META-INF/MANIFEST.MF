@@ -10,7 +10,9 @@ Require-Bundle: org.eclipse.ui.console,
  org.overture.ide.ui,
  org.overture.ide.core,
  org.overture.ide.builders.vdmj,
- org.overture.ide.debug
+ org.overture.ide.debug,
+ org.slf4j.api;bundle-version="1.7.2",
+ org.eclipse.m2e.maven.runtime.slf4j.simple;bundle-version="1.6.2"
 Bundle-Activator: org.overture.ide.plugins.cgen.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.apache.velocity.app,org.overture.codegen.ir,org.ov
@@ -32,5 +34,4 @@ Bundle-ClassPath: .,
  jars/commons-collections.jar,
  jars/commons-lang.jar,
  jars/jalopy.jar,
- jars/log4j.jar,
  jars/velocity.jar
