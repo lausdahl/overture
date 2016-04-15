@@ -2,7 +2,7 @@
  * #%~
  * Code Generator Plugin
  * %%
- * Copyright (C) 2008 - 2014 Overture
+ * Copyright (C) 2008 - 2016 Overture
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -32,6 +32,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -40,13 +41,12 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.osgi.service.prefs.Preferences;
 import org.overture.ast.lex.Dialect;
-import org.overture.codegen.assistant.AssistantManager;
 import org.overture.codegen.ir.IRSettings;
 import org.overture.codegen.utils.AnalysisExceptionIR;
 import org.overture.codegen.utils.GeneralUtils;
 import org.overture.codegen.utils.GeneratedData;
+import org.overture.codegen.utils.GeneratedModule;
 import org.overture.codegen.vdm2c.CGen;
-import org.overture.codegen.vdm2jml.JmlSettings;
 import org.overture.config.Settings;
 import org.overture.ide.core.IVdmModel;
 import org.overture.ide.core.resources.IVdmProject;
@@ -58,13 +58,6 @@ import org.overture.ide.ui.utility.VdmTypeCheckerUi;
 
 public class Vdm2CCommand extends AbstractHandler
 {
-	private AssistantManager assistantManager;
-
-	public Vdm2CCommand()
-	{
-		this.assistantManager = new AssistantManager();
-	}
-
 	public Object execute(ExecutionEvent event) throws ExecutionException
 	{
 		// Validate project
@@ -130,23 +123,13 @@ public class Vdm2CCommand extends AbstractHandler
 			return null;
 		}
 
-		CodeGenConsole.GetInstance().println("Starting VDM to C code generation...\n");
-
-		final List<String> classesToSkip = PluginVdm2CUtil.getClassesToSkip();
-//				final JavaSettings javaSettings = getJavaSettings(project, classesToSkip);
-
-		//		final IRSettings irSettings = getIrSettings(project);
+		CodeGenConsole.GetInstance().println("Starting VDM to C code generation...");
 
 		Job codeGenerate = new Job("VDM to C code generation")
 		{
 			@Override
 			protected IStatus run(IProgressMonitor monitor)
 			{
-				//				if(javaSettings == null)
-				//				{
-				//					return Status.CANCEL_STATUS;
-				//				}
-
 				// Begin code generation
 				try
 				{
@@ -160,44 +143,28 @@ public class Vdm2CCommand extends AbstractHandler
 					
 					// Generate user specified classes
 					GeneratedData generatedData = vdm2c.generate(PluginVdm2CUtil.getNodes(model.getSourceUnits()));
-//					
-//					outputUserSpecifiedSkippedClasses(classesToSkip);
-//					outputSkippedClasses(generatedData.getSkippedClasses());
-//					
-//					File cCodeOutputFolder = PluginVdm2CUtil.getCCodeOutputFolder(vdmProject, javaSettings);
-//					
-//					try
+					
+					CodeGenConsole.GetInstance().println("Project dialect: " + PluginVdm2CUtil.dialect2Str(vdmProject.getDialect()));
+						
+					if(vdmProject.getDialect() == Dialect.VDM_RT)
+					{
+						CodeGenConsole.GetInstance().println("The current version of the C code generator does not fully support the timing and distributed aspects of VDM-RT.");
+						CodeGenConsole.GetInstance().println("Please refer to the Overture User Manual for a discussion of supported language features.");
+					}
+					
+					
+//					for (GeneratedModule module : generatedData.getClasses())
 //					{
-//						vdm2c.genJavaSourceFiles(javaCodeOutputFolder, generatedData.getClasses());
 //
-//						CodeGenConsole.GetInstance().println("Project dialect: " + PluginVdm2CUtil.dialect2Str(vdmProject.getDialect()));
-//						
-//						if(vdmProject.getDialect() == Dialect.VDM_RT)
+//						if (module.canBeGenerated())
 //						{
-//							CodeGenConsole.GetInstance().println("The current version of the Java code generator does not support the distributed aspects of the VDM-RT.");
-//							CodeGenConsole.GetInstance().println("Ignoring deployment as well as cycles and duration statements...\n");
+//							CodeGenConsole.GetInstance().println(module.getContent());
+//							CodeGenConsole.GetInstance().println(module.getUnsupportedInIr());
+//							CodeGenConsole.GetInstance().println(module.getMergeErrors());
+//							CodeGenConsole.GetInstance().println(module.getUnsupportedInTargLang());
 //						}
-//						else
-//						{
-//							CodeGenConsole.GetInstance().println("");
-//						}
-//						
-//					} catch (Exception e)
-//					{
-//						CodeGenConsole.GetInstance().printErrorln("Problems saving the code generated Java source files to disk.");
-//						CodeGenConsole.GetInstance().printErrorln("Try to run Overture with write permissions.\n");
-//						
-//						if(SystemUtils.IS_OS_WINDOWS)
-//						{
-//							CodeGenConsole.GetInstance().println("Operating System: Windows.");
-//							CodeGenConsole.GetInstance().println("If you installed Overture in a location such as \"C:\\Program Files\\Overture\"");
-//							CodeGenConsole.GetInstance().println("you may need to give Overture permissions to write to the file system. You can try");
-//							CodeGenConsole.GetInstance().println("run Overture as administrator and see if this solves the problem.");
-//						}
-//						
-//						return Status.CANCEL_STATUS;
 //					}
-//					
+						
 //					File libFolder = PluginVdm2CUtil.getCodeGenRuntimeLibFolder(vdmProject);
 //					
 //					try
@@ -211,6 +178,7 @@ public class Vdm2CCommand extends AbstractHandler
 //						CodeGenConsole.GetInstance().printErrorln("Reason: " + e.getMessage());
 //					}
 //					
+					//This should be where the VDM C lib gets copied.
 //					try
 //					{
 //						PluginVdm2CUtil.copyCodeGenFile(PluginVdm2CUtil.CODEGEN_RUNTIME_SOURCES_FILE, libFolder);
@@ -221,32 +189,9 @@ public class Vdm2CCommand extends AbstractHandler
 //						CodeGenConsole.GetInstance().printErrorln("Problems copying the Java code generator runtime library sources to " + libFolder.getAbsolutePath());
 //						CodeGenConsole.GetInstance().printErrorln("Reason: " + e.getMessage());
 //					}
-//					
-//					if(generateJml(vdmProject))
-//					{
-//						try
-//						{
-//							PluginVdm2CUtil.copyCodeGenFile(PluginVdm2CUtil.VDM2JML_RUNTIME_BIN_FILE, libFolder);
-//							outputVdm2JmlBinaries(libFolder);
-//						}
-//						catch(Exception e)
-//						{
-//							CodeGenConsole.GetInstance().printErrorln("Problems copying the VDM-to-JML runtime library to " + libFolder.getAbsolutePath());
-//							CodeGenConsole.GetInstance().printErrorln("Reason: " + e.getMessage());
-//						}
-//						
-//						try
-//						{
-//							PluginVdm2CUtil.copyCodeGenFile(PluginVdm2CUtil.VDM2JML_RUNTIME_SOURCES_FILE, libFolder);
-//							outputVdm2JmlSources(libFolder);
-//						}
-//						catch(Exception e)
-//						{
-//							CodeGenConsole.GetInstance().printErrorln("Problems copying the VDM-to-JML runtime library sources to " + libFolder.getAbsolutePath());
-//							CodeGenConsole.GetInstance().printErrorln("Reason: " + e.getMessage());
-//						}
-//					}
-//					
+					
+					
+					
 //					try
 //					{
 //						PluginVdm2CUtil.copyCodeGenFile(PluginVdm2CUtil.ECLIPSE_RES_FILES_FOLDER +  "/"
@@ -261,16 +206,11 @@ public class Vdm2CCommand extends AbstractHandler
 //						// Always imports codegen-runtime.jar
 //						String classPathEntries =  PluginVdm2CUtil.RUNTIME_CLASSPATH_ENTRY;
 //						
-//						if(generateJml(vdmProject))
-//						{
-//							// Import the VDM-to-JML runtime
-//							classPathEntries += PluginVdm2CUtil.VDM2JML_CLASSPATH_ENTRY;
-//						}
 //						
 //						GeneralCodeGenUtils.replaceInFile(new File(eclipseProjectFolder, PluginVdm2CUtil.ECLIPSE_CLASSPATH_FILE), "%s", classPathEntries);
 //						
 //						
-						CodeGenConsole.GetInstance().println("Finished generating VDM model.\n");
+						CodeGenConsole.GetInstance().println("Code generation completed successfully.");
 //
 //					} catch (Exception e)
 //					{
@@ -278,21 +218,6 @@ public class Vdm2CCommand extends AbstractHandler
 //						CodeGenConsole.GetInstance().printErrorln("Problems generating the eclipse project with the generated Java code");
 //						CodeGenConsole.GetInstance().printErrorln("Reason: "
 //								+ e.getMessage());
-//					}
-//					
-//					outputUserspecifiedModules(javaCodeOutputFolder, generatedData.getClasses());
-//
-//					// Quotes generation
-//					outputQuotes(vdmProject, javaCodeOutputFolder, vdm2c, generatedData.getQuoteValues());
-//
-//					// Renaming of variables shadowing other variables
-//					outputRenamings(generatedData.getAllRenamings());
-//					
-//					InvalidNamesResult invalidNames = generatedData.getInvalidNamesResult();
-//
-//					if (invalidNames != null && !invalidNames.isEmpty())
-//					{
-//						handleInvalidNames(invalidNames);
 //					}
 //					
 //					// Output any warnings such as problems with the user's launch configuration
@@ -308,7 +233,7 @@ public class Vdm2CCommand extends AbstractHandler
 //					
 //					CodeGenConsole.GetInstance().println(msg);
 //
-//					project.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
+					project.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
 //
 				} catch (AnalysisExceptionIR ex)
 				{
@@ -326,32 +251,6 @@ public class Vdm2CCommand extends AbstractHandler
 		codeGenerate.schedule();
 		
 		return null;
-	}
-
-//	public GeneratedData generateC(final IVdmProject project,
-//			final IVdmModel model, final CGen vdm2c)
-//					throws AnalysisException
-//	{
-//		
-//			return vdm2c.generate(PluginVdm2CUtil.getNodes(model.getSourceUnits()));
-//	}
-
-
-	private boolean generateJml(IVdmProject project)
-	{
-		return project.getDialect() == Dialect.VDM_SL && getPrefs().getBoolean(ICodeGenConstants.GENERATE_JML, ICodeGenConstants.GENERATE_JML_DEFAULT);
-	}
-
-	private JmlSettings getJmlSettings()
-	{
-		Preferences preferences = getPrefs();
-
-		boolean useInvFor = preferences.getBoolean(ICodeGenConstants.JML_USE_INVARIANT_FOR, ICodeGenConstants.JML_USE_INVARIANT_FOR_DEFAULT);;
-
-		JmlSettings jmlSettings = new JmlSettings();
-		jmlSettings.setGenInvariantFor(useInvFor);
-
-		return jmlSettings;
 	}
 
 	public IRSettings getIrSettings(final IProject project)
@@ -427,50 +326,6 @@ public class Vdm2CCommand extends AbstractHandler
 //		}
 //	}
 
-//	private void outputUserSpecifiedSkippedClasses(
-//			List<String> userspecifiedSkippedClasses)
-//	{
-//		if (!userspecifiedSkippedClasses.isEmpty())
-//		{
-//			CodeGenConsole.GetInstance().print("User specified filtered classes: ");
-//
-//			for (String skippedClass : userspecifiedSkippedClasses)
-//			{
-//				CodeGenConsole.GetInstance().print(skippedClass + " ");
-//			}
-//
-//			CodeGenConsole.GetInstance().println("\n");
-//		}
-//		else
-//		{
-//			CodeGenConsole.GetInstance().println("No user specified classes to skip.\n");
-//		}
-//	}
-
-//	private void outputSkippedClasses(List<String> skippedClasses)
-//	{
-//		if (!skippedClasses.isEmpty())
-//		{
-//			CodeGenConsole.GetInstance().print("Skipping classes (user specified and library named): ");
-//
-//			for (String skippedClass : skippedClasses)
-//			{
-//				CodeGenConsole.GetInstance().print(skippedClass + " ");
-//			}
-//
-//			CodeGenConsole.GetInstance().println("\n");
-//		}
-//	}
-//	
-//	private void outputRenamings(List<Renaming> allRenamings)
-//	{
-//		if(!allRenamings.isEmpty())
-//		{
-//			CodeGenConsole.GetInstance().println("Due to variable shadowing or normalisation of Java identifiers the following renamings of variables have been made:");
-//			CodeGenConsole.GetInstance().println(GeneralCodeGenUtils.constructVarRenamingString(allRenamings));;
-//		}
-//	}
-//	
 //	private void outputRuntimeBinaries(File outputFolder)
 //	{
 //		File runtime = new File(outputFolder, PluginVdm2CUtil.CODEGEN_RUNTIME_BIN_FILE);
@@ -483,18 +338,6 @@ public class Vdm2CCommand extends AbstractHandler
 //		CodeGenConsole.GetInstance().println("Copied the Java code generator runtime library sources to " + runtime.getAbsolutePath() + "\n");
 //	}
 //	
-//	private void outputVdm2JmlBinaries(File outputFolder)
-//	{
-//		File vdm2jmlRuntime = new File(outputFolder, PluginVdm2CUtil.VDM2JML_RUNTIME_BIN_FILE);
-//		CodeGenConsole.GetInstance().println("Copied the VDM-to-JML runtime library to " + vdm2jmlRuntime.getAbsolutePath());
-//	}
-//	
-//	private void outputVdm2JmlSources(File outputFolder)
-//	{
-//		File vdm2jmlSources = new File(outputFolder, PluginVdm2CUtil.VDM2JML_RUNTIME_BIN_FILE);
-//		CodeGenConsole.GetInstance().println("Copied the VDM-to-JML runtime library sources to " + vdm2jmlSources.getAbsolutePath() + "\n");
-//	}	
-//
 //	private void outputUserspecifiedModules(File outputFolder,
 //			List<GeneratedModule> userspecifiedClasses)
 //	{
